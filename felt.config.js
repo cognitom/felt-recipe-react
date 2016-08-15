@@ -1,15 +1,16 @@
 'use strict'
 
 /**
- * Standard recipe for Felt
+ * A recipe for Felt with React
  */
 
 const
   rollup = require('felt-rollup'),
-  babel = require('rollup-plugin-babel'),
+  buble = require('rollup-plugin-buble'),
   nodeResolve = require('rollup-plugin-node-resolve'),
   nodeGlobals = require('rollup-plugin-node-globals'),
   commonjs = require('rollup-plugin-commonjs'),
+  replace = require('rollup-plugin-replace'),
   postcss = require('felt-postcss'),
   postcssImport = require('postcss-import'),
   cssnext = require('postcss-cssnext')
@@ -19,11 +20,7 @@ module.exports = {
   handlers: {
     '.js': rollup({
       plugins: [
-        babel({
-          babelrc: false,
-          exclude: 'node_modules/**',
-          presets: ['es2015-rollup', 'stage-0', 'react']
-        }),
+        buble(),
         commonjs({
           exclude: 'node_modules/process-es6/**',
           include: [
@@ -34,7 +31,11 @@ module.exports = {
           ]
         }),
         nodeGlobals(),
-        nodeResolve({ main: true, browser: true })
+        replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
+        nodeResolve({
+          browser: true,
+          main: true
+        })
       ],
       sourceMap: true
     }),

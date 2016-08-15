@@ -1,18 +1,20 @@
 # felt-recipe-react
 
 A recipe for [Felt](https://github.com/cognitom/felt) with React.
-
-```bash
-$ npm install felt-recipe-react
-```
+This recipe is based on @yamafaktory's [buble-react-rollup-starter](https://github.com/yamafaktory/buble-react-rollup-starter).
 
 ## Usage via CLI
 
 ```bash
+$ npm install -g felt felt-recipe-react
 $ felt --recipe react --src public
 ```
 
 ## Usage via Express
+
+```bash
+$ npm install felt felt-recipe-react
+```
 
 ```javascript
 'use strict'

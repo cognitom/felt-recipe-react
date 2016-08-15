@@ -1,21 +1,36 @@
-import test from 'ava'
-import Nightmare from 'nightmare'
-import server from 'felt/lib/server'
-import configBuilder from 'felt/lib/config-builder'
-import recipeReact from '../felt.config.js'
+'use strict'
+const
+  assert = require('assert'),
+  co = require('co'),
+  Nightmare = require('nightmare'),
+  fsp = require('fs-promise'),
+  path = require('path'),
+  felt = require('felt/lib/server'),
+  configBuilder = require('felt/lib/config-builder'),
+  recipe = require('../felt.config.js')
 
-test('renders React components', async function(t) {
-  const
-    port = 3333,
-    opts = configBuilder(recipeReact, { src: 'fixture', port, debug: true }),
-    url = `http://localhost:${ port }/index.html`,
-    myServer = await server(opts),
-    text = await Nightmare()
-      .goto(url)
-      .wait()
-      .evaluate(() => document.querySelector('h1').innerText)
-      .end()
+describe('felt-recipe-react', () => {
+  let server
+  const port = 3333, root = __dirname
 
-  t.is(text, 'Hi from DummyComponent.')
-  myServer.close()
+  before(co.wrap(function* () {
+    const opts = configBuilder(recipe, { src: 'fixture', port, root })
+    server = yield felt(opts)
+  }))
+
+  it('renders React components', co.wrap(function* () {
+    const
+      url = `http://localhost:${ port }/index.html`,
+      text = yield Nightmare()
+        .goto(url)
+        .wait()
+        .evaluate(() => document.querySelector('h1').innerText)
+        .end()
+
+    assert.equal(text, 'Hi from DummyComponent.')
+  }))
+
+  after(() => {
+    server.close()
+  })
 })

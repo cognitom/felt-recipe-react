@@ -1,3 +1,4 @@
+// Import React.
 import React from 'react'
 
 export class DummyComponent extends React.Component {
